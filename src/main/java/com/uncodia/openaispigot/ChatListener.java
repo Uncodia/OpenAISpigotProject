@@ -48,7 +48,6 @@ public class ChatListener implements Listener {
                     Vector lookDirection = player.getEyeLocation().toVector().subtract(closestVillager.getEyeLocation().toVector());
                     closestVillager.setAI(false);
                     closestVillager.teleport(closestVillager.getLocation().setDirection(lookDirection));
-                    closestVillager.setAI(true);
                     String prompt = "You are a village in minecraft. Your name is "+closestVillager.getName()+". The name of player you are talking to is "+player.getName()+
                             ". Your location is "+closestVillager.getLocation().toString()+". Your type is "+closestVillager.getVillagerType()+
                             ". Your age is "+closestVillager.getAge()+". the seed that you are in is "+ closestVillager.getSeed()+". Respond to the following sentence as a villager in minecraft."+event.getMessage();

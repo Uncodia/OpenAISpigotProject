@@ -25,57 +25,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpenAiCodeCompletionTask extends BukkitRunnable {
-    String prompt ="";
-    String textResponseOutput =null;
+    String prompt = "";
+    String textResponseOutput = null;
     Player player;
     Villager closestVillager;
+
     public OpenAiCodeCompletionTask(String prompt, Player player, Villager closestVillager) {
         this.prompt = prompt;
-        this.player=player;
-        this.closestVillager=closestVillager;
+        this.player = player;
+        this.closestVillager = closestVillager;
     }
 
 
     @Override
     public void run() {
         try {
-            this.textResponseOutput=UnirestUtil.openAICompletions(prompt);
-            player.getServer().broadcastMessage(ChatColor.AQUA + closestVillager.getName()+ ": " + this.textResponseOutput);
+            this.textResponseOutput = UnirestUtil.openAICompletions(prompt);
+            player.getServer().broadcastMessage(ChatColor.AQUA + closestVillager.getName() + ": " + this.textResponseOutput);
             String textResponseOutput = this.textResponseOutput;
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     //create a text above the villager without holographic displays
-                    ArmorStand armorStand = player.getWorld().spawn(closestVillager.getLocation().add(0,1.5,0), ArmorStand.class);
+                    ArmorStand armorStand = player.getWorld().spawn(closestVillager.getLocation().add(0, 1, 0), ArmorStand.class);
                     armorStand.setGravity(false);
                     armorStand.setVisible(false);
-                    armorStand.setCustomName(textResponseOutput);
-                    armorStand.setCustomNameVisible(true);
-                    armorStand.setHeadPose(new EulerAngle(0, 90, 0));
-                    armorStand.setHelmet(new ItemStack(Material.PAPER));
-                    armorStand.setInvulnerable(true);
-                    armorStand.setCollidable(false);
-                    armorStand.setInvulnerable(true);
-                    armorStand.setBasePlate(false);
-                    armorStand.setArms(false);
-                    armorStand.setSmall(true);
+                    //make textResponseOutput 10world per line
+                    String[] words = textResponseOutput.split(" ");
+                    //show 7 world by a time for 1.5 second each time with bukkit runnable in a loop
+                    int textResponseOutputLength = words.length;
+                    int i = 0;
+                    for (int j = 0; j < textResponseOutputLength; j += 5) {
+                        int finalJ = j;
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                String text = "";
+                                for (int k = finalJ; k < finalJ + 5; k++) {
+                                    if (k < textResponseOutputLength) {
+                                        text = text + words[k] + " ";
+                                    }
+                                }
+                                armorStand.setCustomName(text);
+                                armorStand.setCustomNameVisible(true);
+                            }
+                        }.runTaskLater(player.getServer().getPluginManager().getPlugin("OpenAISpigot"), 30 * i);
+                        i++;
+                    }
                     //make the villager stand still
                     closestVillager.setAI(false);
-                    //remove it after 5 seconds
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             armorStand.remove();
                             closestVillager.setAI(true);
                         }
-                    }.runTaskLater(player.getServer().getPluginManager().getPlugin("OpenAISpigot"), 400);
+                    }.runTaskLater(player.getServer().getPluginManager().getPlugin("OpenAISpigot"), 30 * i);
                 }
-                }.runTask(player.getServer().getPluginManager().getPlugin("OpenAISpigot"));
-
-
-
+            }.runTask(player.getServer().getPluginManager().getPlugin("OpenAISpigot"));
         } catch (Exception e) {
             e.printStackTrace();
+
         }
     }
 }
