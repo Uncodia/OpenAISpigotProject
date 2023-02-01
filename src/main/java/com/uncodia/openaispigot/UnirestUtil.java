@@ -18,7 +18,7 @@ public class UnirestUtil {
 
         String requestBody = "{\"model\":\"text-davinci-003\"" +
                 ",\"prompt\":\""+ prompt +"\"" +
-                ",\"max_tokens\":256,\"temperature\":0.7}";
+                ",\"max_tokens\":256,\"temperature\":0.9}";
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
