@@ -1,0 +1,4 @@
+name: OpenAISpigot
+version: '${project.version}'
+main: com.uncodia.openaispigot.OpenAISpigot
+api-version: 1.19
