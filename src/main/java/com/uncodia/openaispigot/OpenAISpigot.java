@@ -12,13 +12,6 @@ public final class OpenAISpigot extends JavaPlugin {
         getServer().broadcast("OpenAISpigot is enabled!", "openaispigot.broadcast");
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().getPlugin("OpenAISpigot").getDataFolder().mkdirs();
-//        if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-//            getLogger().severe("*** HolographicDisplays is not installed or not enabled. ***");
-//            getLogger().severe("*** This plugin will be disabled. ***");
-//            this.setEnabled(false);
-//            return;
-//        }
-
     }
 
     @Override
